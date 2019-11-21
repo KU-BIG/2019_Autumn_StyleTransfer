@@ -14,17 +14,10 @@ import matplotlib.pyplot as plt
 import flowlib
 
 
-device = 'cuda'
-ALPHA = 1e13 #previously 12, 2e10
-BETA  = 1e10 #1e6 #11, 
-GAMMA = 3e-2 #previously -3
-LAMBDA_O = 1e6
-LAMBDA_F = 1e4
-IMG_SIZE = (640, 360)
-VGG16_MEAN = [0.485, 0.456, 0.406]
-VGG16_STD = [0.229, 0.224, 0.225]
-
 def normalizeVGG16(img):
+    VGG16_MEAN = [0.485, 0.456, 0.406]
+    VGG16_STD = [0.229, 0.224, 0.225]
+
     mean = img.new_tensor(VGG16_MEAN).view(-1, 1, 1)
     std = img.new_tensor(VGG16_STD).view(-1, 1, 1)
 
@@ -33,16 +26,11 @@ def normalizeVGG16(img):
 
 normalize = transforms.Lambda(lambda x: normalizeVGG16(x))
 
-transform1 = transforms.Compose([
+def mul_255(IMG_SIZE):
+    return transforms.Compose([
                 transforms.Resize(IMG_SIZE),
                 transforms.ToTensor(),
                 transforms.Lambda(lambda x: x.mul(255)),
-                normalize
-                ])
-transform2 = transforms.Compose([
-                transforms.Resize(IMG_SIZE),
-                transforms.ToTensor(),
-                transforms.Lambda(lambda x: (1-x).mul(255)),
                 normalize
                 ])
 
